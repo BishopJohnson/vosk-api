@@ -5,6 +5,7 @@
 
 stage=-1
 stop_stage=100
+dynamic_graph=false
 
 . utils/parse_options.sh
 
@@ -75,7 +76,13 @@ fi
 if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
 
   utils/format_lm.sh data/lang data/local/lm/lm_tgsmall.arpa.gz data/local/dict/lexicon.txt data/lang_test
-  utils/mkgraph.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
+  
+  if [ ${dynamic_graph} = true ]; then
+    utils/mkgraph_lookahead.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
+  else
+    utils/mkgraph.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
+  fi
+  
   utils/build_const_arpa_lm.sh data/local/lm/lm_tgmed.arpa.gz \
     data/lang data/lang_test_rescore
 
