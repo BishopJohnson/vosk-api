@@ -74,6 +74,7 @@ fi
 
 # Decode
 if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${KALDI_ROOT}/tools/openfst/lib/fst
 
   utils/format_lm.sh data/lang data/local/lm/lm_tgsmall.arpa.gz data/local/dict/lexicon.txt data/lang_test
   
