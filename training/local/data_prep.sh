@@ -47,7 +47,7 @@ for reader_dir in $(find -L $src -mindepth 1 -maxdepth 1 -type d | sort); do
 
   for chapter_dir in $(find -L $reader_dir/ -mindepth 1 -maxdepth 1 -type d | sort); do
     chapter=$(basename $chapter_dir)
-    if ! [ "$chapter" -eq "$chapter" ]; then
+    if ! [ "$chapter" == "$chapter" ]; then
       echo "$0: unexpected chapter-subdirectory name $chapter"
       exit 1;
     fi
