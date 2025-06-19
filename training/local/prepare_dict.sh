@@ -6,7 +6,7 @@ src_dir=$1
 dst_dir=$2
 
 mkdir -p $dst_dir
-cat $src_dir/librispeech-lexicon.txt | sed 's:[012]::g' > $dst_dir/lexicon_raw_nosil.txt
+cat $src_dir/lexicon.txt | sed 's:[012]::g' > $dst_dir/lexicon_raw_nosil.txt
 
 (echo SIL; echo SPN;) > $dst_dir/silence_phones.txt
 echo SIL > $dst_dir/optional_silence.txt

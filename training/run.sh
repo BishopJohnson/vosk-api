@@ -9,7 +9,7 @@ dynamic_graph=false
 
 . utils/parse_options.sh
 
-# Data preparation
+# Data preparation (LibriSpeech)
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
   data_url=www.openslr.org/resources/31
   lm_url=www.openslr.org/resources/11
@@ -22,6 +22,7 @@ if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
 
   local/download_lm.sh $lm_url $database data/local/lm
 
+  mv data/local/lm/librispeech-lexicon.txt data/local/lm/lexicon.txt # Rename lexicon file for dictionary formatting
   local/data_prep.sh $database/LibriSpeech/train-clean-5 data/train
   local/data_prep.sh $database/LibriSpeech/dev-clean-2 data/test
 fi
