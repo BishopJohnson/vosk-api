@@ -6,9 +6,6 @@
 
 lm_order=1 # Language model order (n-gram quantity) - Value of 1 is enough for digits grammar.
 
-# Remove data from previous run
-rm -rf data/local/tmp
-
 loc=$(which ngram-count);
 
 if [ -z "$loc" ]; then
@@ -28,5 +25,4 @@ if [ -z "$loc" ]; then
 fi
 
 local=data/local
-mkdir $local/tmp
-ngram-count -order $lm_order -write-vocab $local/tmp/vocab-full.txt -wbdiscount -text $local/corpus.txt -lm $local/tmp/lm.arpa
+ngram-count -order $lm_order -write-vocab $local/lm/vocab-full.txt -wbdiscount -text $local/lm/vocab.txt -lm $local/lm/lm.arpa

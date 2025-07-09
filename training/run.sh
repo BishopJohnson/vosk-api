@@ -77,7 +77,7 @@ fi
 if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${KALDI_ROOT}/tools/openfst/lib/fst
 
-  utils/format_lm.sh data/lang data/local/lm/lm_tgsmall.arpa.gz data/local/dict/lexicon.txt data/lang_test
+  utils/format_lm.sh data/lang data/local/lm/lm.arpa.gz data/local/vocab-full.txt data/lang_test
   
   if [ ${dynamic_graph} = true ]; then
     utils/mkgraph_lookahead.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
@@ -85,11 +85,9 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
     utils/mkgraph.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
   fi
   
-  utils/build_const_arpa_lm.sh data/local/lm/lm_tgmed.arpa.gz \
-    data/lang data/lang_test_rescore
+  utils/build_const_arpa_lm.sh data/local/lm/lm.arpa.gz data/lang data/lang_test_rescore
 
   for task in test; do
-
     steps/make_mfcc.sh --cmd "$train_cmd" --nj 10 data/$task exp/make_mfcc/$task $mfcc
     steps/compute_cmvn_stats.sh data/$task exp/make_mfcc/$task $mfcc
 
