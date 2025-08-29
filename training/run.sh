@@ -77,8 +77,8 @@ fi
 if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
   export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${KALDI_ROOT}/tools/openfst/lib/fst
 
-  utils/format_lm.sh data/lang data/local/lm/lm.arpa.gz data/local/vocab-full.txt data/lang_test
-  
+  utils/format_lm.sh data/lang data/local/lm/lm.arpa.gz data/local/lm/vocab-full.txt data/lang_test
+
   if [ ${dynamic_graph} = true ]; then
     utils/mkgraph_lookahead.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
   else
