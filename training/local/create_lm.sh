@@ -1,9 +1,5 @@
 ﻿#!/usr/bin/env bash
 
-# Code snippet from Kaldi for Dummies tutorial.
-#
-# Credits: kaldi-asr https://kaldi-asr.org/doc/kaldi_for_dummies.html#kaldi_for_dummies_running
-
 lm_order=1 # Language model order (n-gram quantity) - Value of 1 is enough for digits grammar.
 
 loc=$(which ngram-count);
