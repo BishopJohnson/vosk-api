@@ -84,7 +84,7 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
   else
     utils/mkgraph.sh --self-loop-scale 1.0 data/lang_test exp/chain/tdnn exp/chain/tdnn/graph
   fi
-  
+
   utils/build_const_arpa_lm.sh data/local/lm/lm.arpa.gz data/lang data/lang_test_rescore
 
   for task in test; do
@@ -95,11 +95,31 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
         data/${task} exp/chain/extractor \
         exp/chain/ivectors_${task}
 
-    steps/nnet3/decode.sh --cmd $decode_cmd --num-threads 10 --nj 1 \
-         --beam 13.0 --max-active 7000 --lattice-beam 4.0 \
-         --online-ivector-dir exp/chain/ivectors_${task} \
-         --acwt 1.0 --post-decode-acwt 10.0 \
-         exp/chain/tdnn/graph data/${task} exp/chain/tdnn/decode_${task}
+    if [ ${dynamic_graph} = true ]; then
+      steps/nnet3/decode_lookahead.sh --cmd $decode_cmd \
+        --num-threads 10 \
+        --nj 1 \
+        --beam 13.0 \
+        --max-active 7000 \
+        --lattice-beam 4.0 \
+        --online-ivector-dir exp/chain/ivectors_${task} \
+        --acwt 1.0 \
+        --post-decode-acwt 10.0 \
+        --use-gpu true \
+        exp/chain/tdnn/graph data/${task} exp/chain/tdnn/decode_${task}
+      else
+        steps/nnet3/decode.sh --cmd $decode_cmd \
+              --num-threads 10 \
+              --nj 1 \
+              --beam 13.0 \
+              --max-active 7000 \
+              --lattice-beam 4.0 \
+              --online-ivector-dir exp/chain/ivectors_${task} \
+              --acwt 1.0 \
+              --post-decode-acwt 10.0 \
+              --use-gpu true \
+              exp/chain/tdnn/graph data/${task} exp/chain/tdnn/decode_${task}
+      fi
 
     steps/lmrescore_const_arpa.sh data/lang_test data/lang_test_rescore \
         data/${task} exp/chain/tdnn/decode_${task} exp/chain/tdnn/decode_${task}_rescore
