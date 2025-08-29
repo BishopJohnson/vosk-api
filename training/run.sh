@@ -97,7 +97,6 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
 
     if [ ${dynamic_graph} = true ]; then
       steps/nnet3/decode_lookahead.sh --cmd $decode_cmd \
-        --num-threads 10 \
         --nj 1 \
         --beam 13.0 \
         --max-active 7000 \
