@@ -1,5 +1,7 @@
 ﻿#!/usr/bin/env bash
 
+# Creates language model files.
+
 lm_order=1 # Language model order (n-gram quantity) - Value of 1 is enough for digits grammar.
 
 loc=$(which ngram-count);
