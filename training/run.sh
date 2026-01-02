@@ -6,7 +6,6 @@
 stage=-1
 stop_stage=100
 dynamic_graph=false
-n=2
 
 . utils/parse_options.sh
 
@@ -37,35 +36,35 @@ fi
 # Extract MFCC features
 if [ ${stage} -le 2 ] && [ ${stop_stage} -ge 2 ]; then
   for task in train; do
-    steps/make_mfcc.sh --cmd "$train_cmd" --nj ${n} data/$task exp/make_mfcc/$task $mfcc
+    steps/make_mfcc.sh --cmd "$train_cmd" --nj 10 data/$task exp/make_mfcc/$task $mfcc
     steps/compute_cmvn_stats.sh data/$task exp/make_mfcc/$task $mfcc
   done
 fi
 
 # Train GMM models
 if [ ${stage} -le 3 ] && [ ${stop_stage} -ge 3 ]; then
-  steps/train_mono.sh --nj ${n} --cmd "$train_cmd" \
+  steps/train_mono.sh --nj 10 --cmd "$train_cmd" \
     data/train data/lang exp/mono
 
-  steps/align_si.sh  --nj ${n} --cmd "$train_cmd" \
+  steps/align_si.sh  --nj 10 --cmd "$train_cmd" \
     data/train data/lang exp/mono exp/mono_ali
 
   steps/train_lda_mllt.sh  --cmd "$train_cmd" \
     2000 10000 data/train data/lang exp/mono_ali exp/tri1
 
-  steps/align_si.sh --nj ${n} --cmd "$train_cmd" \
+  steps/align_si.sh --nj 10 --cmd "$train_cmd" \
     data/train data/lang exp/tri1 exp/tri1_ali
 
   steps/train_lda_mllt.sh --cmd "$train_cmd" \
     2500 15000 data/train data/lang exp/tri1_ali exp/tri2
 
-  steps/align_si.sh  --nj ${n} --cmd "$train_cmd" \
+  steps/align_si.sh  --nj 10 --cmd "$train_cmd" \
     data/train data/lang exp/tri2 exp/tri2_ali
 
   steps/train_lda_mllt.sh --cmd "$train_cmd" \
     2500 20000 data/train data/lang exp/tri2_ali exp/tri3
 
-  steps/align_si.sh  --nj ${n} --cmd "$train_cmd" \
+  steps/align_si.sh  --nj 10 --cmd "$train_cmd" \
     data/train data/lang exp/tri3 exp/tri3_ali
 fi
 
@@ -89,16 +88,16 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
   utils/build_const_arpa_lm.sh data/local/lm/lm.arpa.gz data/lang data/lang_test_rescore
 
   for task in test; do
-    steps/make_mfcc.sh --cmd "$train_cmd" --nj ${n} data/$task exp/make_mfcc/$task $mfcc
+    steps/make_mfcc.sh --cmd "$train_cmd" --nj 10 data/$task exp/make_mfcc/$task $mfcc
     steps/compute_cmvn_stats.sh data/$task exp/make_mfcc/$task $mfcc
 
-    steps/online/nnet2/extract_ivectors_online.sh --nj ${n} \
+    steps/online/nnet2/extract_ivectors_online.sh --nj 10 \
         data/${task} exp/chain/extractor \
         exp/chain/ivectors_${task}
 
     if [ ${dynamic_graph} = true ]; then
       steps/nnet3/decode_lookahead.sh --cmd $decode_cmd \
-        --nj ${n} \
+        --nj 1 \
         --beam 13.0 \
         --max-active 7000 \
         --lattice-beam 4.0 \
@@ -110,7 +109,7 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
       else
         steps/nnet3/decode.sh --cmd $decode_cmd \
               --num-threads 10 \
-              --nj ${n} \
+              --nj 1 \
               --beam 13.0 \
               --max-active 7000 \
               --lattice-beam 4.0 \
