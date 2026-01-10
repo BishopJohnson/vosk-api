@@ -107,10 +107,15 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
               --use-gpu true \
               exp/chain/tdnn/graph data/${task} exp/chain/tdnn/decode_${task}
       fi
-
-    steps/lmrescore_const_arpa.sh data/lang_test data/lang_test_rescore \
-        data/${task} exp/chain/tdnn/decode_${task} exp/chain/tdnn/decode_${task}_rescore
   done
+fi
 
+# Test
+if [ ${stage} -le 6 ] && [ ${stop_stage} -ge 6 ]; then
+  for task in test; do
+    steps/lmrescore_const_arpa.sh data/lang_test data/lang_test_rescore \
+            data/${task} exp/chain/tdnn/decode_${task} exp/chain/tdnn/decode_${task}_rescore
+  done
+  
   bash RESULTS
 fi
