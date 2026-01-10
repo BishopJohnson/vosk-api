@@ -85,7 +85,7 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
 
     if [ ${dynamic_graph} = true ]; then
       steps/nnet3/decode_lookahead.sh --cmd $decode_cmd \
-        --nj 1 \
+        --nj 10 \
         --beam 13.0 \
         --max-active 7000 \
         --lattice-beam 4.0 \
@@ -97,7 +97,7 @@ if [ ${stage} -le 5 ] && [ ${stop_stage} -ge 5 ]; then
       else
         steps/nnet3/decode.sh --cmd $decode_cmd \
               --num-threads 10 \
-              --nj 1 \
+              --nj 10 \
               --beam 13.0 \
               --max-active 7000 \
               --lattice-beam 4.0 \
