@@ -9,22 +9,10 @@ dynamic_graph=false
 
 . utils/parse_options.sh
 
-# Data preparation (LibriSpeech)
+# Data preparation
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
-  data_url=www.openslr.org/resources/31
-  lm_url=www.openslr.org/resources/11
-  database=corpus
-
-  mkdir -p $database
-  for part in dev-clean-2 train-clean-5; do
-    local/download_and_untar.sh $database $data_url $part
-  done
-
-  local/download_lm.sh $lm_url $database data/local/lm
-
-  mv data/local/lm/librispeech-lexicon.txt data/local/lm/lexicon.txt # Rename lexicon file for dictionary formatting
-  local/data_prep.sh $database/LibriSpeech/train-clean-5 data/train
-  local/data_prep.sh $database/LibriSpeech/dev-clean-2 data/test
+  local/data_prep.sh corpus/audio/train-clean data/train
+  local/data_prep.sh corpus/audio/test-clean data/test
 fi
 
 # Dictionary formatting
